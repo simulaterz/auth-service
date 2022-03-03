@@ -1,20 +1,25 @@
 package th.demo.auth.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import th.demo.auth.model.ContextProfile;
 import th.demo.auth.model.OfficerModel;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/v1")
-public class UserController {
+@RequestMapping(value = "/v1/officer")
+public class OfficerController {
 
-    @GetMapping("/officer/inquiry")
+    @Autowired
+    private ContextProfile contextProfile;
+
+    @GetMapping("/inquiry")
     public OfficerModel inquiryOfficer() {
-
         log.info("trigger inquiry");
+        log.info("contextProfile = {}", contextProfile);
 
         return OfficerModel.builder()
                 .firstName("john")
