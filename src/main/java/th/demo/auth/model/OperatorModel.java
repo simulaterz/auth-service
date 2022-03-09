@@ -9,6 +9,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OperatorModel extends CommonUserModel {
+public class OperatorModel extends BaseUserModel {
     private String mainCountry;
 }

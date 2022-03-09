@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-import th.demo.auth.model.ContextProfile;
+import th.demo.auth.model.ApiContext;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
-    public ContextProfile contextProfile;
+    public ApiContext apiContext;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -42,11 +42,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         // TODO:: mock context profile
         var username = Double.toString(Math.random());
-        contextProfile.setUsername(username);
-        contextProfile.setRoles("ADMIN");
+        apiContext.setUsername(username);
+        apiContext.setRoles("ADMIN");
 
         // add to context
-//        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         filterChain.doFilter(request, response);
     }

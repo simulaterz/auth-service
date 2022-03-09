@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import th.demo.auth.model.ContextProfile;
+import th.demo.auth.model.ApiContext;
 import th.demo.auth.model.OfficerModel;
 
 @Slf4j
@@ -14,12 +14,12 @@ import th.demo.auth.model.OfficerModel;
 public class OfficerController {
 
     @Autowired
-    private ContextProfile contextProfile;
+    private ApiContext apiContext;
 
     @GetMapping("/inquiry")
     public OfficerModel inquiryOfficer() {
         log.info("trigger inquiry");
-        log.info("contextProfile = {}", contextProfile);
+        log.info("contextProfile = {}", apiContext);
 
         return OfficerModel.builder()
                 .firstName("john")

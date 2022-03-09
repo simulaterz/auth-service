@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OfficerModel extends CommonUserModel {
+public class OfficerModel extends BaseUserModel {
     private String station;
     private Integer floor;
 }

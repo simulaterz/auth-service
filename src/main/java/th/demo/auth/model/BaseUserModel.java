@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommonUserModel {
+public class BaseUserModel {
     private String firstName;
     private String lastName;
     private Integer age;

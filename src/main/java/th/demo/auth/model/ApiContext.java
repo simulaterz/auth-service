@@ -7,7 +7,7 @@ import org.springframework.web.context.annotation.RequestScope;
 @Data
 @Component
 @RequestScope
-public class ContextProfile {
+public class ApiContext {
     private String username;
     private String roles;
 }
