@@ -9,5 +9,6 @@ import org.springframework.web.context.annotation.RequestScope;
 @RequestScope
 public class ApiContext {
     private String username;
-    private String roles;
+    private String role;
+    private String language;
 }

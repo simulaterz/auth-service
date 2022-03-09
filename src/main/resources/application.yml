@@ -7,4 +7,14 @@ spring:
   application:
     name: auth-service
 
+filter:
+  bypass:
+    authorization:
+      - /internal/**
+      - /v1/auth/**
+
+jwt:
+  secret: "jwtsecret"
+
+
 
