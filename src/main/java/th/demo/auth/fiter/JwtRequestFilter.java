@@ -1,11 +1,14 @@
 package th.demo.auth.fiter;
 
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import th.demo.auth.component.JwtTokenComponent;
+import th.demo.auth.exception.RestExceptionResolver;
+import th.demo.auth.exception.UnauthorizedException;
 import th.demo.auth.model.ApiContext;
 import th.demo.auth.property.BypassApiProperty;
 
@@ -22,11 +25,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final ApiContext apiContext;
     private final BypassApiProperty bypassApiProperty;
     private final JwtTokenComponent jwtTokenComponent;
+    private final RestExceptionResolver resolver;
 
-    public JwtRequestFilter(ApiContext apiContext, BypassApiProperty bypassApiProperty, JwtTokenComponent jwtTokenComponent) {
+    public JwtRequestFilter(ApiContext apiContext, BypassApiProperty bypassApiProperty, JwtTokenComponent jwtTokenComponent, RestExceptionResolver resolver) {
         this.apiContext = apiContext;
         this.bypassApiProperty = bypassApiProperty;
         this.jwtTokenComponent = jwtTokenComponent;
+        this.resolver = resolver;
     }
 
     @Override
@@ -39,36 +44,43 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         log.info("Filter isMatchBypass: {}", isMatchBypass);
 
         if (!isMatchBypass) {
-            var authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-            var token = authorizationHeaderToJWTString(authorization);
-
             try {
-                var validToken = jwtTokenComponent.validateToken(token);
-                if (!validToken)
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-                else
-                    filterChain.doFilter(request, response);
-
+                processRequestHeader(request, response, filterChain);
             } catch (Exception ex) {
-                // TODO:: Use global exception handler
-                log.error("Validate JWT failed.");
                 ex.printStackTrace();
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                resolver.resolveException(request, response, null, new UnauthorizedException("Invalid token."));
             }
         } else {
-            // TODO:: mock context profile
-            var username = Double.toString(Math.random());
-            apiContext.setUsername(username);
-            apiContext.setRole("ADMIN");
-
             filterChain.doFilter(request, response);
         }
     }
 
-    public String authorizationHeaderToJWTString(String authorization) {
-        if(authorization != null) {
+    private String authorizationHeaderToJWTString(String authorization) {
+        if (authorization != null) {
             return authorization.substring("Bearer ".length());
         }
         return null;
+    }
+
+    private void processRequestHeader(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        var authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+        var token = authorizationHeaderToJWTString(authorization);
+        var claims = jwtTokenComponent.validateToken(token);
+
+        if (claims == null)
+            resolver.resolveException(request, response, null, new UnauthorizedException("Unauthorized !"));
+        else {
+            // init
+            initApiContext(request, claims);
+            filterChain.doFilter(request, response);
+        }
+    }
+
+    private void initApiContext(HttpServletRequest request, Claims claims) {
+        apiContext.setUsername((String) claims.get("username"));
+        apiContext.setRole((String) claims.get("role"));
+
+        var language = ("th-TH").equals(request.getHeader("Accept-Language")) ? "th" : "en";
+        apiContext.setLanguage(language);
     }
 }

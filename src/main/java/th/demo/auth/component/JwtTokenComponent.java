@@ -27,11 +27,10 @@ public class JwtTokenComponent {
         this.apiContext = apiContext;
     }
 
-    public String generateToken() {
+    public String generateToken(String username, String role) {
         var claims = new HashMap<String, Object>();
-        claims.put("username", apiContext.getUsername());
-        claims.put("role", apiContext.getRole());
-        claims.put("language", apiContext.getLanguage());
+        claims.put("username", username);
+        claims.put("role", role);
 
         return doGenerateToken(claims, apiContext.getUsername());
     }
@@ -41,8 +40,15 @@ public class JwtTokenComponent {
         return claimsResolver.apply(claims);
     }
 
-    public boolean validateToken(String token) {
-        return !isTokenExpired(token);
+    public Claims validateToken(String token) {
+        var claims = getAllClaimsFromToken(token);
+        var expiration = claims.getExpiration();
+
+        if (expiration.before(new Date())) {
+            return null;
+        } else {
+            return getAllClaimsFromToken(token);
+        }
     }
 
     private String doGenerateToken(Map<String, Object> claims, String subject) {
@@ -61,10 +67,4 @@ public class JwtTokenComponent {
                 .parseClaimsJws(token)
                 .getBody();
     }
-
-    private Boolean isTokenExpired(String token) {
-        var expiration = getClaimFromToken(token, Claims::getExpiration);
-        return expiration.before(new Date());
-    }
-
 }

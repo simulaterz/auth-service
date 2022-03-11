@@ -22,6 +22,6 @@ public class AuthController {
     @GetMapping("/sign-in")
     public String signIn() {
         log.info("trigger sign in");
-        return jwtTokenComponent.generateToken();
+        return jwtTokenComponent.generateToken("mock", "!@#$");
     }
 }
