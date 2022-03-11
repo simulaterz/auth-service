@@ -65,15 +65,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private void processRequestHeader(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         var token = authorizationHeaderToJWTString(authorization);
-        var claims = jwtTokenComponent.validateToken(token);
+        var claims = jwtTokenComponent.getAllClaimsFromToken(token);
 
-        if (claims == null)
-            resolver.resolveException(request, response, null, new UnauthorizedException("Unauthorized !"));
-        else {
-            // init
-            initApiContext(request, claims);
-            filterChain.doFilter(request, response);
-        }
+        initApiContext(request, claims);
+
+        filterChain.doFilter(request, response);
     }
 
     private void initApiContext(HttpServletRequest request, Claims claims) {
