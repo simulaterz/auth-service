@@ -1,4 +1,4 @@
-package th.demo.auth.configuration;
+package th.demo.portfolio.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

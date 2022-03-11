@@ -1,4 +1,4 @@
-package th.demo.auth.configuration;
+package th.demo.portfolio.configuration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.csrf.CsrfFilter;
-import th.demo.auth.fiter.JwtRequestFilter;
+import th.demo.portfolio.filter.JwtRequestFilter;
 
 @Slf4j
 @EnableWebSecurity

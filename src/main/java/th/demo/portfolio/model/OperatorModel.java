@@ -1,7 +1,8 @@
-package th.demo.auth.model;
+package th.demo.portfolio.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -9,8 +10,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseUserModel {
-    private String firstName;
-    private String lastName;
-    private Integer age;
+@EqualsAndHashCode(callSuper = false)
+public class OperatorModel extends BaseUserModel {
+    private String mainCountry;
 }

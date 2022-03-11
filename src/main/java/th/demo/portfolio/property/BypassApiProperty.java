@@ -1,4 +1,4 @@
-package th.demo.auth.property;
+package th.demo.portfolio.property;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

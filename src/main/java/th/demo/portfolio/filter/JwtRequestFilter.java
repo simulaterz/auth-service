@@ -1,4 +1,4 @@
-package th.demo.auth.fiter;
+package th.demo.portfolio.filter;
 
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
@@ -6,11 +6,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-import th.demo.auth.component.JwtTokenComponent;
-import th.demo.auth.exception.RestExceptionResolver;
-import th.demo.auth.exception.UnauthorizedException;
-import th.demo.auth.model.ApiContext;
-import th.demo.auth.property.BypassApiProperty;
+import th.demo.portfolio.component.JwtTokenComponent;
+import th.demo.portfolio.exception.RestExceptionResolver;
+import th.demo.portfolio.exception.UnauthorizedException;
+import th.demo.portfolio.model.ApiContext;
+import th.demo.portfolio.property.BypassApiProperty;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

@@ -1,4 +1,4 @@
-package th.demo.auth.exception;
+package th.demo.portfolio.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;

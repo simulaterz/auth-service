@@ -1,4 +1,4 @@
-package th.demo.auth.exception;
+package th.demo.portfolio.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

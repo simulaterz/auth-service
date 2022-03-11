@@ -1,4 +1,4 @@
-package th.demo.auth.model;
+package th.demo.portfolio.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

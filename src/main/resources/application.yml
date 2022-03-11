@@ -5,7 +5,7 @@ server:
 
 spring:
   application:
-    name: auth-service
+    name: portfolio-service
 
 filter:
   bypass:

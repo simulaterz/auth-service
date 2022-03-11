@@ -1,4 +1,4 @@
-package th.demo.auth.component;
+package th.demo.portfolio.component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
