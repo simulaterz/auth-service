@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import th.demo.auth.model.ApiContext;
@@ -21,10 +20,12 @@ public class JwtTokenComponent {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Autowired
-    private ApiContext apiContext;
-
     private final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+    private final ApiContext apiContext;
+
+    public JwtTokenComponent(ApiContext apiContext) {
+        this.apiContext = apiContext;
+    }
 
     public String generateToken() {
         var claims = new HashMap<String, Object>();

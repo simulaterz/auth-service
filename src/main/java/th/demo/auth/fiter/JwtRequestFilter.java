@@ -1,8 +1,8 @@
 package th.demo.auth.fiter;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import th.demo.auth.component.JwtTokenComponent;
@@ -16,16 +16,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
+@Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private ApiContext apiContext;
+    private final ApiContext apiContext;
+    private final BypassApiProperty bypassApiProperty;
+    private final JwtTokenComponent jwtTokenComponent;
 
-    @Autowired
-    private BypassApiProperty bypassApiProperty;
-
-    @Autowired
-    private JwtTokenComponent jwtTokenComponent;
+    public JwtRequestFilter(ApiContext apiContext, BypassApiProperty bypassApiProperty, JwtTokenComponent jwtTokenComponent) {
+        this.apiContext = apiContext;
+        this.bypassApiProperty = bypassApiProperty;
+        this.jwtTokenComponent = jwtTokenComponent;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

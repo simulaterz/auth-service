@@ -13,8 +13,11 @@ import th.demo.auth.model.OfficerModel;
 @RequestMapping(value = "/v1/officer")
 public class OfficerController {
 
-    @Autowired
-    private ApiContext apiContext;
+    private final ApiContext apiContext;
+
+    public OfficerController(ApiContext apiContext) {
+        this.apiContext = apiContext;
+    }
 
     @GetMapping("/inquiry")
     public OfficerModel inquiryOfficer() {

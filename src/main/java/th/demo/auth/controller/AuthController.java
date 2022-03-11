@@ -13,8 +13,11 @@ import th.demo.auth.model.OfficerModel;
 @RequestMapping(value = "/v1/auth")
 public class AuthController {
 
-    @Autowired
-    private JwtTokenComponent jwtTokenComponent;
+    private final JwtTokenComponent jwtTokenComponent;
+
+    public AuthController(JwtTokenComponent jwtTokenComponent) {
+        this.jwtTokenComponent = jwtTokenComponent;
+    }
 
     @GetMapping("/sign-in")
     public String signIn() {
