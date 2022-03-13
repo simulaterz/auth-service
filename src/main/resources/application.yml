@@ -15,6 +15,7 @@ filter:
 
 jwt:
   secret: "jwtsecret"
+  expire-millis: 18000000
 
 
 

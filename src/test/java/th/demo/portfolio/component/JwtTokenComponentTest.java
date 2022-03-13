@@ -10,8 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
+import th.demo.portfolio.property.JwtProperty;
 
 import java.time.*;
 
@@ -29,17 +30,19 @@ class JwtTokenComponentTest {
     @Mock
     private Clock clock;
 
+    @Spy
+    private JwtProperty property = new JwtProperty();
+
     private final LocalDateTime DATE_TIME = LocalDate.of(2022, 3, 10).atTime(10, 1);
+    private final long FIVE_HOURS = 5 * 60 * 60 * 1000;
     private Clock fixedClock;
     private String globalToken;
 
-
     @BeforeEach
     public void setUp() {
-        // @Value
-        ReflectionTestUtils.setField(component, "secret", "jwtsecret");
+        property.setSecret("jwtsecret");
+        property.setExpireMillis(FIVE_HOURS);
 
-        //
         fixedClock = Clock.fixed(DATE_TIME.toInstant(ZoneOffset.UTC), ZoneId.of("Asia/Bangkok"));
         doReturn(fixedClock.millis()).when(clock).millis();
     }
@@ -51,8 +54,7 @@ class JwtTokenComponentTest {
         var result = component.getAllClaimsFromToken(globalToken);
 
         var expiryDate = fixedClock.instant();
-        var fiveHours = 5 * 60 * 60 * 1000;
-        var expectedExpiryDate = Instant.ofEpochMilli(expiryDate.toEpochMilli() + fiveHours);
+        var expectedExpiryDate = Instant.ofEpochMilli(expiryDate.toEpochMilli() + FIVE_HOURS);
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(expectedExpiryDate, result.getExpiration().toInstant());

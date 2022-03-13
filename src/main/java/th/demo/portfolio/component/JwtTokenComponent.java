@@ -4,8 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import th.demo.portfolio.property.JwtProperty;
 
 import java.time.Clock;
 import java.util.Date;
@@ -17,14 +17,12 @@ import java.util.function.Function;
 @Component
 public class JwtTokenComponent {
 
-    @Value("${jwt.secret}")
-    private String secret;
-
     private final Clock clock;
-    private final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+    private final JwtProperty jwtProperty;
 
-    public JwtTokenComponent(Clock clock) {
+    public JwtTokenComponent(Clock clock, JwtProperty jwtProperty) {
         this.clock = clock;
+        this.jwtProperty = jwtProperty;
     }
 
     public String generateToken(String username, String role) {
@@ -45,14 +43,14 @@ public class JwtTokenComponent {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(clock.millis()))
-                .setExpiration(new Date(clock.millis() + JWT_TOKEN_VALIDITY*1000))
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .setExpiration(new Date(clock.millis() + jwtProperty.getExpireMillis()))
+                .signWith(SignatureAlgorithm.HS512, jwtProperty.getSecret())
                 .compact();
     }
 
     public Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
-                .setSigningKey(secret)
+                .setSigningKey(jwtProperty.getSecret())
                 .setClock(() -> new Date(clock.millis()))
                 .parseClaimsJws(token)
                 .getBody();
