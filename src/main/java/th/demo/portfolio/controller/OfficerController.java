@@ -9,7 +9,7 @@ import th.demo.portfolio.model.OfficerModel;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/v1/officer")
+@RequestMapping(value = "/api/v1/officer")
 public class OfficerController {
 
     private final ApiContext apiContext;

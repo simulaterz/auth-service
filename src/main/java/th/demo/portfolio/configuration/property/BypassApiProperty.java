@@ -1,4 +1,4 @@
-package th.demo.portfolio.property;
+package th.demo.portfolio.configuration.property;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

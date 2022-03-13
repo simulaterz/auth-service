@@ -43,6 +43,7 @@ public class RestExceptionResolver extends AbstractHandlerExceptionResolver {
                         ex.getMessage(),
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
                         response);
+                logger.warn("Handling of [" + ex.getClass().getName() + "] resulted in Exception", ex);
             }
             return new ModelAndView();
         } catch (Exception handlerException) {

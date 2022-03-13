@@ -12,7 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import th.demo.portfolio.property.JwtProperty;
+import th.demo.portfolio.configuration.property.JwtProperty;
 
 import java.time.*;
 
@@ -40,8 +40,13 @@ class JWTComponentTest {
 
     @BeforeEach
     public void setUp() {
+        var expire = JwtProperty.JwtExpireProperty.builder()
+                .access(FIVE_HOURS)
+                .refresh(FIVE_HOURS)
+                .build();
+
         property.setSecret("jwtsecret");
-        property.setExpireMillis(FIVE_HOURS);
+        property.setExpire(expire);
 
         fixedClock = Clock.fixed(DATE_TIME.toInstant(ZoneOffset.UTC), ZoneId.of("Asia/Bangkok"));
         doReturn(fixedClock.millis()).when(clock).millis();
@@ -50,7 +55,8 @@ class JWTComponentTest {
     @Test
     @DisplayName("generate and validate token, expected success")
     void generateAndValidateToken() {
-        globalToken = component.generateToken("my-user", "my-role");
+        // set global token
+        globalToken = component.generateToken("my-user", FIVE_HOURS);
         var result = component.getAllClaimsFromToken(globalToken);
 
         var expiryDate = fixedClock.instant();
@@ -58,8 +64,7 @@ class JWTComponentTest {
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(expectedExpiryDate, result.getExpiration().toInstant());
-        Assertions.assertEquals("my-user", (String) result.get("username"));
-        Assertions.assertEquals("my-role", (String) result.get("role"));
+        Assertions.assertEquals("my-user", (String) result.get("username"));;
     }
 
     @Test

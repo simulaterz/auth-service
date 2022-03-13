@@ -10,7 +10,7 @@ import th.demo.portfolio.component.JWTComponent;
 import th.demo.portfolio.exception.RestExceptionResolver;
 import th.demo.portfolio.exception.UnauthorizedException;
 import th.demo.portfolio.model.ApiContext;
-import th.demo.portfolio.property.BypassApiProperty;
+import th.demo.portfolio.configuration.property.BypassApiProperty;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -67,14 +67,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         var token = authorizationHeaderToJWTString(authorization);
         var claims = JWTComponent.getAllClaimsFromToken(token);
 
-        initApiContext(request, claims);
+        initApiContext(request, claims, token);
 
         filterChain.doFilter(request, response);
     }
 
-    private void initApiContext(HttpServletRequest request, Claims claims) {
+    private void initApiContext(HttpServletRequest request, Claims claims, String token) {
         apiContext.setUsername((String) claims.get("username"));
         apiContext.setRole((String) claims.get("role"));
+        apiContext.setAuthenticationHeader(token);
 
         var language = ("th-TH").equals(request.getHeader("Accept-Language")) ? "th" : "en";
         apiContext.setLanguage(language);

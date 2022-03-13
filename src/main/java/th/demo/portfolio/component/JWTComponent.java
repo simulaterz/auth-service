@@ -3,9 +3,8 @@ package th.demo.portfolio.component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import th.demo.portfolio.property.JwtProperty;
+import th.demo.portfolio.configuration.property.JwtProperty;
 
 import java.time.Clock;
 import java.util.Date;
@@ -24,12 +23,11 @@ public class JWTComponent {
         this.jwtProperty = jwtProperty;
     }
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, long expiration) {
         var claims = new HashMap<String, Object>();
         claims.put("username", username);
-        claims.put("role", role);
 
-        return doGenerateToken(claims, username);
+        return doGenerateToken(claims, username, expiration);
     }
 
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
@@ -37,12 +35,12 @@ public class JWTComponent {
         return claimsResolver.apply(claims);
     }
 
-    private String doGenerateToken(Map<String, Object> claims, String subject) {
+    private String doGenerateToken(Map<String, Object> claims, String subject, long expiration) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(clock.millis()))
-                .setExpiration(new Date(clock.millis() + jwtProperty.getExpireMillis()))
+                .setExpiration(new Date(clock.millis() + expiration))
                 .signWith(SignatureAlgorithm.HS512, jwtProperty.getSecret())
                 .compact();
     }

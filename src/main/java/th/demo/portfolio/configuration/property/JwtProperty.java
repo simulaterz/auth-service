@@ -1,4 +1,4 @@
-package th.demo.portfolio.property;
+package th.demo.portfolio.configuration.property;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,5 +12,16 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("jwt")
 public class JwtProperty {
     private String secret;
-    private long expireMillis;
+    private JwtExpireProperty expire;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class JwtExpireProperty {
+        private long access;
+        private long refresh;
+    }
 }
+
+

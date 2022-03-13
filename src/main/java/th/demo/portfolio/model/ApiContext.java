@@ -8,6 +8,7 @@ import org.springframework.web.context.annotation.RequestScope;
 @Component
 @RequestScope
 public class ApiContext {
+    private String authenticationHeader;
     private String username;
     private String role;
     private String language;
