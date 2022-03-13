@@ -3,7 +3,6 @@ package th.demo.portfolio.component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,7 @@ import th.demo.portfolio.configuration.property.JwtProperty;
 
 import java.time.*;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 
 @Slf4j
@@ -62,9 +61,9 @@ class JWTComponentTest {
         var expiryDate = fixedClock.instant();
         var expectedExpiryDate = Instant.ofEpochMilli(expiryDate.toEpochMilli() + FIVE_HOURS);
 
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(expectedExpiryDate, result.getExpiration().toInstant());
-        Assertions.assertEquals("my-user", (String) result.get("username"));;
+        assertNotNull(result);
+        assertEquals(expectedExpiryDate, result.getExpiration().toInstant());
+        assertEquals("my-user", (String) result.get("username"));;
     }
 
     @Test
@@ -73,7 +72,7 @@ class JWTComponentTest {
         generateAndValidateToken();
         var issuer = component.getClaimFromToken(globalToken, Claims::getSubject);
 
-        Assertions.assertEquals("my-user", issuer);
+        assertEquals("my-user", issuer);
     }
 
     @Test
@@ -90,6 +89,6 @@ class JWTComponentTest {
             component.getAllClaimsFromToken(globalToken);
         });
 
-        Assertions.assertTrue(exception.getMessage().contains("a difference of 3600000 milliseconds"));
+        assertTrue(exception.getMessage().contains("a difference of 3600000 milliseconds"));
     }
 }
