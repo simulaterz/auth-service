@@ -24,6 +24,9 @@ jwt:
   expire:
     access: 6000000
     refresh: 12000000
+  key:
+    access: "LOGIN:ACCESSTOKEN:"
+    refresh: "LOGIN:REFRESHTOKEN:"
 
 username-password:
   list:

@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class JwtProperty {
     private String secret;
     private JwtExpireProperty expire;
+    private JwtKeyProperty key;
 
     @Data
     @Builder
@@ -21,6 +22,15 @@ public class JwtProperty {
     public static class JwtExpireProperty {
         private long access;
         private long refresh;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class JwtKeyProperty {
+        private String access;
+        private String refresh;
     }
 }
 

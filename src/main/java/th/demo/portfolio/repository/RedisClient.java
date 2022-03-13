@@ -5,14 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@Service
+@Repository
 public class RedisClient {
 
     private final RedisTemplate<String, String> redisTemplate;

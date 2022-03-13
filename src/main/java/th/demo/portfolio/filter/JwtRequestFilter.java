@@ -7,10 +7,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import th.demo.portfolio.component.JWTComponent;
+import th.demo.portfolio.configuration.property.BypassApiProperty;
 import th.demo.portfolio.exception.RestExceptionResolver;
 import th.demo.portfolio.exception.UnauthorizedException;
 import th.demo.portfolio.model.ApiContext;
-import th.demo.portfolio.configuration.property.BypassApiProperty;
+import th.demo.portfolio.model.redis.AccessTokenRedis;
+import th.demo.portfolio.repository.AuthenticationRepository;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -24,14 +26,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final ApiContext apiContext;
     private final BypassApiProperty bypassApiProperty;
-    private final JWTComponent JWTComponent;
+    private final JWTComponent JwtComponent;
     private final RestExceptionResolver resolver;
+    private final AuthenticationRepository authRepository;
 
-    public JwtRequestFilter(ApiContext apiContext, BypassApiProperty bypassApiProperty, JWTComponent JWTComponent, RestExceptionResolver resolver) {
+    public JwtRequestFilter(ApiContext apiContext, BypassApiProperty bypassApiProperty, JWTComponent JwtComponent, RestExceptionResolver resolver, AuthenticationRepository authRepository) {
         this.apiContext = apiContext;
         this.bypassApiProperty = bypassApiProperty;
-        this.JWTComponent = JWTComponent;
+        this.JwtComponent = JwtComponent;
         this.resolver = resolver;
+        this.authRepository = authRepository;
     }
 
     @Override
@@ -46,6 +50,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (!isMatchBypass) {
             try {
                 processRequestHeader(request, response, filterChain);
+            } catch (UnauthorizedException ex) {
+                resolver.resolveException(request, response, null, ex);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 resolver.resolveException(request, response, null, new UnauthorizedException("Invalid token."));
@@ -65,17 +71,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private void processRequestHeader(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         var token = authorizationHeaderToJWTString(authorization);
-        var claims = JWTComponent.getAllClaimsFromToken(token);
+        var accessTokenRedis = authRepository.getAccessTokenDetail(token);
 
-        initApiContext(request, claims, token);
+        if (accessTokenRedis == null)
+            throw new UnauthorizedException("Not found, Invalid token.");
+
+        var claims = JwtComponent.getAllClaimsFromToken(token);
+
+        initApiContext(request, claims, token, accessTokenRedis);
 
         filterChain.doFilter(request, response);
     }
 
-    private void initApiContext(HttpServletRequest request, Claims claims, String token) {
+    private void initApiContext(HttpServletRequest request, Claims claims, String token, AccessTokenRedis accessTokenRedis) {
         apiContext.setUsername((String) claims.get("username"));
-        apiContext.setRole((String) claims.get("role"));
         apiContext.setAuthenticationHeader(token);
+        apiContext.setBaseUserModel(accessTokenRedis.getBaseUserModel());
 
         var language = ("th-TH").equals(request.getHeader("Accept-Language")) ? "th" : "en";
         apiContext.setLanguage(language);
