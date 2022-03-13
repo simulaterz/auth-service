@@ -13,14 +13,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Slf4j
 @Component
-public class JwtTokenComponent {
+public class JWTComponent {
 
     private final Clock clock;
     private final JwtProperty jwtProperty;
 
-    public JwtTokenComponent(Clock clock, JwtProperty jwtProperty) {
+    public JWTComponent(Clock clock, JwtProperty jwtProperty) {
         this.clock = clock;
         this.jwtProperty = jwtProperty;
     }

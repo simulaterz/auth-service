@@ -6,7 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-import th.demo.portfolio.component.JwtTokenComponent;
+import th.demo.portfolio.component.JWTComponent;
 import th.demo.portfolio.exception.RestExceptionResolver;
 import th.demo.portfolio.exception.UnauthorizedException;
 import th.demo.portfolio.model.ApiContext;
@@ -24,13 +24,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final ApiContext apiContext;
     private final BypassApiProperty bypassApiProperty;
-    private final JwtTokenComponent jwtTokenComponent;
+    private final JWTComponent JWTComponent;
     private final RestExceptionResolver resolver;
 
-    public JwtRequestFilter(ApiContext apiContext, BypassApiProperty bypassApiProperty, JwtTokenComponent jwtTokenComponent, RestExceptionResolver resolver) {
+    public JwtRequestFilter(ApiContext apiContext, BypassApiProperty bypassApiProperty, JWTComponent JWTComponent, RestExceptionResolver resolver) {
         this.apiContext = apiContext;
         this.bypassApiProperty = bypassApiProperty;
-        this.jwtTokenComponent = jwtTokenComponent;
+        this.JWTComponent = JWTComponent;
         this.resolver = resolver;
     }
 
@@ -65,7 +65,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private void processRequestHeader(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         var token = authorizationHeaderToJWTString(authorization);
-        var claims = jwtTokenComponent.getAllClaimsFromToken(token);
+        var claims = JWTComponent.getAllClaimsFromToken(token);
 
         initApiContext(request, claims);
 

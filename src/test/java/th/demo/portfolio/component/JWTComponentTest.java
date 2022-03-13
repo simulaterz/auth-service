@@ -21,11 +21,11 @@ import static org.mockito.Mockito.doReturn;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Test: JwtTokenComponent")
-class JwtTokenComponentTest {
+@DisplayName("Test -> JWTComponent")
+class JWTComponentTest {
 
     @InjectMocks
-    private JwtTokenComponent component;
+    private JWTComponent component;
 
     @Mock
     private Clock clock;
