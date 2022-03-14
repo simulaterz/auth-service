@@ -8,20 +8,20 @@ import th.demo.portfolio.configuration.property.JwtProperty;
 import th.demo.portfolio.model.BaseUserModel;
 import th.demo.portfolio.model.redis.AccessTokenRedis;
 import th.demo.portfolio.model.redis.RefreshTokenRedis;
-import th.demo.portfolio.repository.AuthenticationRepository;
+import th.demo.portfolio.repository.AuthenticationRedisRepository;
 import th.demo.portfolio.repository.RedisClient;
 
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Repository
-public class AuthenticationRepositoryImpl implements AuthenticationRepository {
+public class AuthenticationRedisRepositoryImpl implements AuthenticationRedisRepository {
 
     private final RedisClient redisClient;
     private final JwtProperty jwtProperty;
     private final SHAComponent shaComponent;
 
-    public AuthenticationRepositoryImpl(RedisClient redisClient, JwtProperty jwtProperty, SHAComponent shaComponent) {
+    public AuthenticationRedisRepositoryImpl(RedisClient redisClient, JwtProperty jwtProperty, SHAComponent shaComponent) {
         this.redisClient = redisClient;
         this.jwtProperty = jwtProperty;
         this.shaComponent = shaComponent;
@@ -40,8 +40,9 @@ public class AuthenticationRepositoryImpl implements AuthenticationRepository {
 
     @Override
     @SneakyThrows
-    public void saveRefreshTokenHashToRedis(String refreshToken, String hashAccessToken, BaseUserModel baseUserModel, long expTime) {
+    public void saveRefreshTokenHashToRedis(String refreshToken, String accessToken, BaseUserModel baseUserModel, long expTime) {
         var hashRefreshToken = shaComponent.toSHA256String(refreshToken);
+        var hashAccessToken = shaComponent.toSHA256String(accessToken);
         var key = jwtProperty.getKey().getRefresh() + hashRefreshToken;
         var value = RefreshTokenRedis.builder()
                 .accessTokenHash(hashAccessToken)

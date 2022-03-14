@@ -28,10 +28,10 @@ import static org.mockito.Mockito.*;
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test -> Authentication Repository")
-class AuthenticationRepositoryImplTest {
+class AuthenticationRedisRepositoryImplTest {
 
     @InjectMocks
-    private AuthenticationRepositoryImpl repository;
+    private AuthenticationRedisRepositoryImpl repository;
 
     @Mock
     private RedisClient redisClient;
@@ -82,6 +82,7 @@ class AuthenticationRepositoryImplTest {
     @Test
     @DisplayName("save refresh token, expected success")
     void saveRefreshTokenHashToRedis() throws NoSuchAlgorithmException, JsonProcessingException {
+        var accessToken = "access";
         var refreshToken = "refresh";
         var hashRefreshToken = "hashRefreshString";
         var hashAccessToken = "hashAccessString";
@@ -89,16 +90,18 @@ class AuthenticationRepositoryImplTest {
 
         var expectedKey = REFRESH_KEY + hashRefreshToken;
 
+        doReturn(hashAccessToken).when(shaComponent).toSHA256String(accessToken);
         doReturn(hashRefreshToken).when(shaComponent).toSHA256String(refreshToken);
         doNothing().when(redisClient).setObject(eq(expectedKey), any(RefreshTokenRedis.class), anyLong());
 
-        repository.saveRefreshTokenHashToRedis(refreshToken, hashAccessToken, baseUserModel, 1L);
+        repository.saveRefreshTokenHashToRedis(refreshToken, accessToken, baseUserModel, 1L);
 
         var expectRedisModel = RefreshTokenRedis.builder()
                 .baseUserModel(baseUserModel)
                 .accessTokenHash(hashAccessToken)
                 .build();
 
+        verify(shaComponent, times(1)).toSHA256String(accessToken);
         verify(shaComponent, times(1)).toSHA256String(refreshToken);
         verify(redisClient, times(1)).setObject(expectedKey, expectRedisModel, EXPIRY_SECONDS);
     }

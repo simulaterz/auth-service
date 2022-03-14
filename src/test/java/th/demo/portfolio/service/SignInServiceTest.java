@@ -18,7 +18,7 @@ import th.demo.portfolio.exception.UnauthorizedException;
 import th.demo.portfolio.model.BaseUserModel;
 import th.demo.portfolio.model.inbound.request.SignInRequest;
 import th.demo.portfolio.model.inbound.response.SignInResponse;
-import th.demo.portfolio.repository.AuthenticationRepository;
+import th.demo.portfolio.repository.AuthenticationRedisRepository;
 
 import java.util.Map;
 
@@ -38,7 +38,7 @@ class SignInServiceTest {
     private JWTComponent jwtComponent;
 
     @Mock
-    private AuthenticationRepository authRepository;
+    private AuthenticationRedisRepository authRepository;
 
     @Spy
     private JwtProperty property = new JwtProperty();

@@ -12,7 +12,7 @@ import th.demo.portfolio.exception.RestExceptionResolver;
 import th.demo.portfolio.exception.UnauthorizedException;
 import th.demo.portfolio.model.ApiContext;
 import th.demo.portfolio.model.redis.AccessTokenRedis;
-import th.demo.portfolio.repository.AuthenticationRepository;
+import th.demo.portfolio.repository.AuthenticationRedisRepository;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -28,9 +28,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final BypassApiProperty bypassApiProperty;
     private final JWTComponent JwtComponent;
     private final RestExceptionResolver resolver;
-    private final AuthenticationRepository authRepository;
+    private final AuthenticationRedisRepository authRepository;
 
-    public JwtRequestFilter(ApiContext apiContext, BypassApiProperty bypassApiProperty, JWTComponent JwtComponent, RestExceptionResolver resolver, AuthenticationRepository authRepository) {
+    public JwtRequestFilter(ApiContext apiContext, BypassApiProperty bypassApiProperty, JWTComponent JwtComponent, RestExceptionResolver resolver, AuthenticationRedisRepository authRepository) {
         this.apiContext = apiContext;
         this.bypassApiProperty = bypassApiProperty;
         this.JwtComponent = JwtComponent;

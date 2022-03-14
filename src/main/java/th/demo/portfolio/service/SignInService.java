@@ -10,7 +10,7 @@ import th.demo.portfolio.exception.UnauthorizedException;
 import th.demo.portfolio.model.BaseUserModel;
 import th.demo.portfolio.model.inbound.request.SignInRequest;
 import th.demo.portfolio.model.inbound.response.SignInResponse;
-import th.demo.portfolio.repository.AuthenticationRepository;
+import th.demo.portfolio.repository.AuthenticationRedisRepository;
 
 @Slf4j
 @Service
@@ -19,9 +19,9 @@ public class SignInService {
     private final UsernamePasswordProperty usernamePasswordProperty;
     private final JWTComponent jwtComponent;
     private final JwtProperty property;
-    private final AuthenticationRepository authRepository;
+    private final AuthenticationRedisRepository authRepository;
 
-    public SignInService(UsernamePasswordProperty usernamePasswordProperty, JWTComponent jwtComponent, JwtProperty property, AuthenticationRepository authRepository) {
+    public SignInService(UsernamePasswordProperty usernamePasswordProperty, JWTComponent jwtComponent, JwtProperty property, AuthenticationRedisRepository authRepository) {
         this.usernamePasswordProperty = usernamePasswordProperty;
         this.jwtComponent = jwtComponent;
         this.property = property;
