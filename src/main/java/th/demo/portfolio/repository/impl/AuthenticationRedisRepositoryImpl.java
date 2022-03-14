@@ -53,16 +53,14 @@ public class AuthenticationRedisRepositoryImpl implements AuthenticationRedisRep
 
     @Override
     @SneakyThrows
-    public AccessTokenRedis getAccessTokenDetail(String accessToken) {
-        var hashAccessToken = shaComponent.toSHA256String(accessToken);
+    public AccessTokenRedis getAccessTokenDetail(String hashAccessToken) {
         var key = jwtProperty.getKey().getAccess() + hashAccessToken;
         return this.redisClient.getObjectByKey(key, AccessTokenRedis.class);
     }
 
     @Override
     @SneakyThrows
-    public RefreshTokenRedis getRefreshTokenDetail(String refreshToken) {
-        var hashRefreshToken = shaComponent.toSHA256String(refreshToken);
+    public RefreshTokenRedis getRefreshTokenDetail(String hashRefreshToken) {
         var key = jwtProperty.getKey().getRefresh() + hashRefreshToken;
         return this.redisClient.getObjectByKey(key, RefreshTokenRedis.class);
     }

@@ -109,7 +109,6 @@ class AuthenticationRedisRepositoryImplTest {
     @Test
     @DisplayName("get access token, expected success")
     void getAccessTokenDetail() throws NoSuchAlgorithmException, JsonProcessingException {
-        var accessToken = "access";
         var hashAccessToken = "hashString";
         var baseUserModel = new BaseUserModel();
 
@@ -118,20 +117,16 @@ class AuthenticationRedisRepositoryImplTest {
                 .baseUserModel(baseUserModel)
                 .build();
 
-        doReturn(hashAccessToken).when(shaComponent).toSHA256String(accessToken);
         doReturn(expectRedisModel).when(redisClient).getObjectByKey(expectedKey, AccessTokenRedis.class);
 
-        var response = repository.getAccessTokenDetail(accessToken);
+        var response = repository.getAccessTokenDetail(hashAccessToken);
 
         assertEquals(expectRedisModel, response);
-
-        verify(shaComponent, times(1)).toSHA256String(accessToken);
     }
 
     @Test
     @DisplayName("get refresh token, expected success")
     void getRefreshTokenDetail() throws NoSuchAlgorithmException, JsonProcessingException {
-        var refreshToken = "refresh";
         var hashRefreshToken = "hashRefreshString";
         var hashAccessToken = "hashAccessString";
         var baseUserModel = new BaseUserModel();
@@ -142,14 +137,11 @@ class AuthenticationRedisRepositoryImplTest {
                 .accessTokenHash(hashAccessToken)
                 .build();
 
-        doReturn(hashRefreshToken).when(shaComponent).toSHA256String(refreshToken);
         doReturn(expectRedisModel).when(redisClient).getObjectByKey(expectedKey, RefreshTokenRedis.class);
 
-        var response = repository.getRefreshTokenDetail(refreshToken);
+        var response = repository.getRefreshTokenDetail(hashRefreshToken);
 
         assertEquals(expectRedisModel, response);
-
-        verify(shaComponent, times(1)).toSHA256String(refreshToken);
     }
 
     @Test

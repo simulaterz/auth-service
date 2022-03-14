@@ -19,13 +19,13 @@ public class SignInService {
     private final UsernamePasswordProperty usernamePasswordProperty;
     private final JWTComponent jwtComponent;
     private final JwtProperty property;
-    private final AuthenticationRedisRepository authRepository;
+    private final AuthenticationRedisRepository authRedisRepository;
 
-    public SignInService(UsernamePasswordProperty usernamePasswordProperty, JWTComponent jwtComponent, JwtProperty property, AuthenticationRedisRepository authRepository) {
+    public SignInService(UsernamePasswordProperty usernamePasswordProperty, JWTComponent jwtComponent, JwtProperty property, AuthenticationRedisRepository authRedisRepository) {
         this.usernamePasswordProperty = usernamePasswordProperty;
         this.jwtComponent = jwtComponent;
         this.property = property;
-        this.authRepository = authRepository;
+        this.authRedisRepository = authRedisRepository;
     }
 
     @SneakyThrows
@@ -48,8 +48,8 @@ public class SignInService {
                     .lastName(Double.toString(Math.random()))
                     .build();
 
-            authRepository.saveAccessTokenHashToRedis(accessToken, baseUserModel, accessTokenExpire);
-            authRepository.saveRefreshTokenHashToRedis(refreshToken, accessToken,baseUserModel, refreshTokenExpire);
+            authRedisRepository.saveAccessTokenHashToRedis(accessToken, baseUserModel, accessTokenExpire);
+            authRedisRepository.saveRefreshTokenHashToRedis(refreshToken, accessToken,baseUserModel, refreshTokenExpire);
 
             log.info("store signIn token to redis completed.");
 
