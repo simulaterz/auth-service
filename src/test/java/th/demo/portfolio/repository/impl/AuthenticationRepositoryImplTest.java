@@ -18,6 +18,7 @@ import th.demo.portfolio.model.redis.RefreshTokenRedis;
 import th.demo.portfolio.repository.RedisClient;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -43,6 +44,7 @@ class AuthenticationRepositoryImplTest {
 
     private final String ACCESS_KEY = "ACCESSKEY:";
     private final String REFRESH_KEY = "REFRESHKEY:";
+    private final long EXPIRY_SECONDS = TimeUnit.MILLISECONDS.toSeconds(1L);
 
     @BeforeEach
     public void setUp() {
@@ -74,7 +76,7 @@ class AuthenticationRepositoryImplTest {
                         .build();
 
         verify(shaComponent, times(1)).toSHA256String(accessToken);
-        verify(redisClient, times(1)).setObject(expectedKey, expectRedisModel, 1L);
+        verify(redisClient, times(1)).setObject(expectedKey, expectRedisModel, EXPIRY_SECONDS);
     }
 
     @Test
@@ -98,7 +100,7 @@ class AuthenticationRepositoryImplTest {
                 .build();
 
         verify(shaComponent, times(1)).toSHA256String(refreshToken);
-        verify(redisClient, times(1)).setObject(expectedKey, expectRedisModel, 1L);
+        verify(redisClient, times(1)).setObject(expectedKey, expectRedisModel, EXPIRY_SECONDS);
     }
 
     @Test

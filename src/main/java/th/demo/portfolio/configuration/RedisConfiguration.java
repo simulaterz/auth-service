@@ -24,10 +24,10 @@ public class RedisConfiguration {
         var redisTemplate = new RedisTemplate<String, Object>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
-        redisTemplate.setValueSerializer(this.getJackson2JsonRedisSerializer());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(this.getJackson2JsonRedisSerializer());
+        redisTemplate.setValueSerializer(this.getJackson2JsonRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(this.getJackson2JsonRedisSerializer());
         redisTemplate.setStringSerializer(new StringRedisSerializer());
         redisTemplate.afterPropertiesSet();
         return redisTemplate;

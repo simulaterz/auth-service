@@ -11,6 +11,8 @@ import th.demo.portfolio.model.redis.RefreshTokenRedis;
 import th.demo.portfolio.repository.AuthenticationRepository;
 import th.demo.portfolio.repository.RedisClient;
 
+import java.util.concurrent.TimeUnit;
+
 @Slf4j
 @Repository
 public class AuthenticationRepositoryImpl implements AuthenticationRepository {
@@ -33,7 +35,7 @@ public class AuthenticationRepositoryImpl implements AuthenticationRepository {
         var value = AccessTokenRedis.builder()
                 .baseUserModel(baseUserModel)
                 .build();
-        this.redisClient.setObject(key, value, expTime);
+        this.redisClient.setObject(key, value, TimeUnit.MILLISECONDS.toSeconds(expTime));
     }
 
     @Override
@@ -45,7 +47,7 @@ public class AuthenticationRepositoryImpl implements AuthenticationRepository {
                 .accessTokenHash(hashAccessToken)
                 .baseUserModel(baseUserModel)
                 .build();
-        this.redisClient.setObject(key, value, expTime);
+        this.redisClient.setObject(key, value, TimeUnit.MILLISECONDS.toSeconds(expTime));
     }
 
     @Override
