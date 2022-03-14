@@ -15,8 +15,10 @@ import th.demo.portfolio.component.JWTComponent;
 import th.demo.portfolio.configuration.property.JwtProperty;
 import th.demo.portfolio.configuration.property.UsernamePasswordProperty;
 import th.demo.portfolio.exception.UnauthorizedException;
+import th.demo.portfolio.model.BaseUserModel;
 import th.demo.portfolio.model.inbound.request.SignInRequest;
 import th.demo.portfolio.model.inbound.response.SignInResponse;
+import th.demo.portfolio.repository.AuthenticationRepository;
 
 import java.util.Map;
 
@@ -34,6 +36,9 @@ class SignInServiceTest {
 
     @Mock
     private JWTComponent jwtComponent;
+
+    @Mock
+    private AuthenticationRepository authRepository;
 
     @Spy
     private JwtProperty property = new JwtProperty();
@@ -82,6 +87,9 @@ class SignInServiceTest {
 
         verify(jwtComponent, times(1)).generateToken(USER, FIVE_HOURS);
         verify(jwtComponent, times(1)).generateToken(USER, SIX_HOURS);
+
+        verify(authRepository, times(1)).saveAccessTokenHashToRedis(anyString(), any(BaseUserModel.class), anyLong());
+        verify(authRepository, times(1)).saveRefreshTokenHashToRedis(anyString(), anyString(), any(BaseUserModel.class), anyLong());
     }
 
     @Test
