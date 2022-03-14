@@ -17,5 +17,6 @@ public class ApiContext {
     private String authenticationHeader;
     private String username;
     private String language;
+    // cache data
     private BaseUserModel baseUserModel;
 }

@@ -14,8 +14,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import th.demo.portfolio.exception.RestExceptionResolver;
 import th.demo.portfolio.exception.UnauthorizedException;
+import th.demo.portfolio.model.inbound.request.RefreshTokenRequest;
 import th.demo.portfolio.model.inbound.request.SignInRequest;
+import th.demo.portfolio.model.inbound.response.RefreshTokenResponse;
 import th.demo.portfolio.model.inbound.response.SignInResponse;
+import th.demo.portfolio.service.RefreshTokenService;
 import th.demo.portfolio.service.SignInService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -36,6 +39,9 @@ class AuthenticationControllerTest {
 
     @Mock
     private SignInService signInService;
+
+    @Mock
+    private RefreshTokenService refreshTokenService;
 
     private MockMvc mockMvc;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -108,4 +114,44 @@ class AuthenticationControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @DisplayName("refreshToken, expected success")
+    void refreshToken() throws Exception {
+        var response = RefreshTokenResponse.builder()
+                .accessToken("ACCESS-TOKEN")
+                .refreshToken("REFRESH-TOKEN")
+                .build();
+
+        doReturn(response)
+                .when(refreshTokenService)
+                .refreshToken(any());
+
+        var request = RefreshTokenRequest.builder()
+                .refreshToken("OLD-REFRESH")
+                .build();
+
+        mockMvc.perform(post("/api/v1/auth/refreshToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.accessToken").exists())
+                .andExpect(jsonPath("$.refreshToken").exists())
+                .andExpect(jsonPath("$.accessToken").value("ACCESS-TOKEN"))
+                .andExpect(jsonPath("$.refreshToken").value("REFRESH-TOKEN"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("refreshToken, expected BadRequest")
+    void refreshTokenBadRequest() throws Exception {
+        var request = RefreshTokenRequest.builder()
+                .refreshToken("")
+                .build();
+
+        mockMvc.perform(post("/api/v1/auth/signIn")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
 }

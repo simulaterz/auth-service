@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-@DisplayName("Test -> JWTComponent")
+@DisplayName("Test -> SignInService")
 class SignInServiceTest {
 
     @InjectMocks
@@ -38,7 +38,7 @@ class SignInServiceTest {
     private JWTComponent jwtComponent;
 
     @Mock
-    private AuthenticationRedisRepository authRepository;
+    private AuthenticationRedisRepository authRedisRepository;
 
     @Spy
     private JwtProperty property = new JwtProperty();
@@ -88,8 +88,8 @@ class SignInServiceTest {
         verify(jwtComponent, times(1)).generateToken(USER, FIVE_HOURS);
         verify(jwtComponent, times(1)).generateToken(USER, SIX_HOURS);
 
-        verify(authRepository, times(1)).saveAccessTokenHashToRedis(anyString(), any(BaseUserModel.class), anyLong());
-        verify(authRepository, times(1)).saveRefreshTokenHashToRedis(anyString(), anyString(), any(BaseUserModel.class), anyLong());
+        verify(authRedisRepository, times(1)).saveAccessTokenHashToRedis(anyString(), any(BaseUserModel.class), anyLong());
+        verify(authRedisRepository, times(1)).saveRefreshTokenHashToRedis(anyString(), anyString(), any(BaseUserModel.class), anyLong());
     }
 
     @Test

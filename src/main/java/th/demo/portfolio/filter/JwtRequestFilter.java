@@ -1,12 +1,14 @@
 package th.demo.portfolio.filter;
 
 import io.jsonwebtoken.Claims;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import th.demo.portfolio.component.JWTComponent;
+import th.demo.portfolio.component.SHAComponent;
 import th.demo.portfolio.configuration.property.BypassApiProperty;
 import th.demo.portfolio.exception.RestExceptionResolver;
 import th.demo.portfolio.exception.UnauthorizedException;
@@ -28,14 +30,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final BypassApiProperty bypassApiProperty;
     private final JWTComponent JwtComponent;
     private final RestExceptionResolver resolver;
-    private final AuthenticationRedisRepository authRepository;
+    private final AuthenticationRedisRepository authRedisRepository;
+    private final SHAComponent shaComponent;
 
-    public JwtRequestFilter(ApiContext apiContext, BypassApiProperty bypassApiProperty, JWTComponent JwtComponent, RestExceptionResolver resolver, AuthenticationRedisRepository authRepository) {
+    public JwtRequestFilter(ApiContext apiContext, BypassApiProperty bypassApiProperty, JWTComponent JwtComponent, RestExceptionResolver resolver, AuthenticationRedisRepository authRedisRepository, SHAComponent shaComponent) {
         this.apiContext = apiContext;
         this.bypassApiProperty = bypassApiProperty;
         this.JwtComponent = JwtComponent;
         this.resolver = resolver;
-        this.authRepository = authRepository;
+        this.authRedisRepository = authRedisRepository;
+        this.shaComponent = shaComponent;
     }
 
     @Override
@@ -68,10 +72,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         return null;
     }
 
+    @SneakyThrows
     private void processRequestHeader(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         var token = authorizationHeaderToJWTString(authorization);
-        var accessTokenRedis = authRepository.getAccessTokenDetail(token);
+        var hashToken = shaComponent.toSHA256String(token);
+        var accessTokenRedis = authRedisRepository.getAccessTokenDetail(hashToken);
 
         if (accessTokenRedis == null)
             throw new UnauthorizedException("Not found, Invalid token.");
