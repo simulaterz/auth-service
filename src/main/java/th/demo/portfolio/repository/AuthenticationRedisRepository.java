@@ -9,4 +9,5 @@ public interface AuthenticationRedisRepository {
     void saveRefreshTokenHashToRedis(String refreshToken, String accessToken, BaseUserModel baseUserModel, long expTime);
     AccessTokenRedis getAccessTokenDetail(String accessToken);
     RefreshTokenRedis getRefreshTokenDetail(String refreshToken);
+    void deleteOldToken(String hashAccessToken, String hashRefreshToken);
 }

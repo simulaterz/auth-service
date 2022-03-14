@@ -151,4 +151,19 @@ class AuthenticationRedisRepositoryImplTest {
 
         verify(shaComponent, times(1)).toSHA256String(refreshToken);
     }
+
+    @Test
+    @DisplayName("deleteOldToken, expected success")
+    void deleteOldToken() {
+        var hashAccessToken = "hashAccessString";
+        var hashRefreshToken = "hashRefreshString";
+
+        var expectedAccessKey = ACCESS_KEY + hashAccessToken;
+        var expectedRefreshKey = REFRESH_KEY + hashRefreshToken;
+
+        repository.deleteOldToken(hashAccessToken, hashRefreshToken);
+
+        verify(redisClient, times(1)).del(expectedAccessKey);
+        verify(redisClient, times(1)).del(expectedRefreshKey);
+    }
 }
