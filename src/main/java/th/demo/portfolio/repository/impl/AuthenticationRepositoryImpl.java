@@ -60,7 +60,7 @@ public class AuthenticationRepositoryImpl implements AuthenticationRepository {
     @SneakyThrows
     public RefreshTokenRedis getRefreshTokenDetail(String refreshToken) {
         var hashRefreshToken = shaComponent.toSHA256String(refreshToken);
-        var key = jwtProperty.getKey().getAccess() + hashRefreshToken;
+        var key = jwtProperty.getKey().getRefresh() + hashRefreshToken;
         return this.redisClient.getObjectByKey(key, RefreshTokenRedis.class);
     }
 }
