@@ -23,6 +23,12 @@ mvn clean spring-boot:run
 
 ## API 
 ___[Postman API Collection Document](https://documenter.getpostman.com/view/12110481/UVsMukcU)___
+```batch
+    # /simple/api/v1/auth/signIn
+    # /simple/api/v1/auth/signOut
+    # /simple/api/v1/auth/refreshToken (receive token to generate new token pair)
+    # /simple/api/v1/officer/inquiry
+```
 
 ## Usage
 ___JwtRequestFilter___
@@ -64,11 +70,19 @@ if (ex instanceof UnauthorizedException) {
     logger.warn("Handling of [" + ex.getClass().getName() + "] resulted in Exception", ex);
 }
 ```
-___Application.yaml (Dafault username & password)___
+___Application.yaml___
 ```yaml
+# Default username & password
 username-password:
   list:
     JOHN: "123"
     JANE: "XYZ"
     JACK: "QWE"
+
+# Path that bypass authorization
+filter:
+  bypass:
+    authorization:
+      - /internal/**
+      - /api/v1/auth/**
 ```
