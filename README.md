@@ -40,6 +40,30 @@ if (password.equals(expectedPassword)) {
     // generate token and store to redis process
 }
 ```
+___RestExceptionResolver___
+```java
+// catch any exception convert to Custom Response Model
+if (ex instanceof UnauthorizedException) {
+    processResponse(
+            "X-UNAUTHORIZED",
+            ex.getMessage(),
+            HttpStatus.UNAUTHORIZED.value(),
+            response);
+} else if (ex instanceof CustomException) {
+    processResponse(
+            "X-CUSTOM",
+            ex.getMessage(),
+            HttpStatus.UNPROCESSABLE_ENTITY.value(),
+            response);
+} else {
+    processResponse(
+            "X-OTHER",
+            ex.getMessage(),
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            response);
+    logger.warn("Handling of [" + ex.getClass().getName() + "] resulted in Exception", ex);
+}
+```
 ___Application.yaml (Dafault username & password)___
 ```yaml
 username-password:
