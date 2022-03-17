@@ -16,14 +16,15 @@ import th.demo.portfolio.exception.RestExceptionResolver;
 import th.demo.portfolio.exception.UnauthorizedException;
 import th.demo.portfolio.model.inbound.request.RefreshTokenRequest;
 import th.demo.portfolio.model.inbound.request.SignInRequest;
+import th.demo.portfolio.model.inbound.request.SignOutRequest;
 import th.demo.portfolio.model.inbound.response.RefreshTokenResponse;
 import th.demo.portfolio.model.inbound.response.SignInResponse;
 import th.demo.portfolio.service.RefreshTokenService;
 import th.demo.portfolio.service.SignInService;
+import th.demo.portfolio.service.SignOutService;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,6 +40,9 @@ class AuthenticationControllerTest {
 
     @Mock
     private SignInService signInService;
+
+    @Mock
+    private SignOutService signOutService;
 
     @Mock
     private RefreshTokenService refreshTokenService;
@@ -148,7 +152,42 @@ class AuthenticationControllerTest {
                 .refreshToken("")
                 .build();
 
-        mockMvc.perform(post("/api/v1/auth/signIn")
+        mockMvc.perform(post("/api/v1/auth/refreshToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("signOut, expected success")
+    void signOut() throws Exception {
+
+        doNothing()
+                .when(signOutService)
+                .signOut(any());
+
+        var request = SignOutRequest.builder()
+                .accessToken("ACCESS")
+                .refreshToken("REFRESH")
+                .build();
+
+        mockMvc.perform(post("/api/v1/auth/signOut")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().is2xxSuccessful())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("signOut, expected BadRequest")
+    void signOutBadRequest() throws Exception {
+        var request = SignOutRequest.builder()
+                .accessToken("ACCESS")
+                .refreshToken("")
+                .build();
+
+        mockMvc.perform(post("/api/v1/auth/signOut")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())

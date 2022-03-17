@@ -72,8 +72,8 @@ public class AuthenticationRedisRepositoryImpl implements AuthenticationRedisRep
         var refreshKey = jwtProperty.getKey().getRefresh() + hashRefreshToken;
 
         try {
-            log.debug("Old access : {}", hashAccessToken);
-            log.debug("Old refresh : {}", hashRefreshToken);
+            log.debug("accessToken to delete: {}", hashAccessToken);
+            log.debug("refreshToken to delete: {}", hashRefreshToken);
 
             if (hashAccessToken != null && !hashAccessToken.isEmpty()) {
                 this.redisClient.del(accessKey);
