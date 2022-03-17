@@ -44,8 +44,9 @@ public class SignInService {
             var refreshToken = jwtComponent.generateToken(username, refreshTokenExpire);
 
             var baseUserModel = BaseUserModel.builder()
-                    .firstName(Double.toString(Math.random()))
-                    .lastName(Double.toString(Math.random()))
+                    .firstName(username + "-FIRSTNAME")
+                    .lastName(username + "-LASTNAME")
+                    .age((int) (Math.random() * 10))
                     .build();
 
             authRedisRepository.saveAccessTokenHashToRedis(accessToken, baseUserModel, accessTokenExpire);

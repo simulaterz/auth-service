@@ -12,6 +12,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class OfficerModel extends BaseUserModel {
-    private String station;
-    private Integer floor;
+    private String position;
+    private String skill;
 }

@@ -20,15 +20,15 @@ public class OfficerController {
 
     @GetMapping("/inquiry")
     public OfficerModel inquiryOfficer() {
-        log.info("trigger inquiry");
-        log.info("contextProfile = {}", apiContext);
+        // use cached data on api context
+        var baseUserModel = apiContext.getBaseUserModel();
 
         return OfficerModel.builder()
-                .firstName("john")
-                .lastName("doe")
-                .age(20)
-                .station("bangkok")
-                .floor(12)
+                .firstName(baseUserModel.getFirstName())
+                .lastName(baseUserModel.getLastName())
+                .age(baseUserModel.getAge())
+                .position("developer")
+                .skill("Java, Kotlin")
                 .build();
     }
 }
